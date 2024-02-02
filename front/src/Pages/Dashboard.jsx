@@ -124,6 +124,12 @@ export default function Dashboard(){
         <button value='green' onClick={handleColor}>green</button>
         <button value='orange' onClick={handleColor}>orange</button>
       </div>
+      <div style={{display:'flex',columnGap:20}}>
+      <button value='purple' onClick={handleColor}>purple</button>
+      <button value='violet' onClick={handleColor}>violet</button>
+      <button value='brown' onClick={handleColor}>brown</button>
+      <button value='black' onClick={handleColor}>black</button>
+        </div>
       <button onClick={handleRectinput}>add rectangle</button>
       <button onClick={handleSaveAsImage}>Save as Image</button>
       <h2>Instructions Table</h2>
