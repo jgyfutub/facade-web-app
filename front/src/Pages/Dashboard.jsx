@@ -14,6 +14,7 @@ export default function Dashboard(){
     const [rectX,setrectX]=useState(0)
     const [rectY,setrectY]=useState(0)
     const [color,setColor]=useState('white')
+    const [result,setresult]=useState("")
 
     const handleSliderChange = (event) => {
       setSliderValue(Number(event.target.value));
@@ -42,12 +43,25 @@ export default function Dashboard(){
           formdata.append('image',dataUrl)
           console.log(formdata)
           const senddata=await axios.post('http://127.0.0.1:5000/facadegenerator/',formdata)
-          const a = document.createElement('a');
-          console.log(dataUrl)
-          a.href = dataUrl;
-          a.download = 'canvas_image.jpg';
-          a.click();
+          setresult(senddata.data.result)
         };
+    const downloadimage=(e)=>{
+      const byteCharacters = atob(e.target.value);
+      const byteNumbers = new Array(byteCharacters.length);
+      for (let i = 0; i < byteCharacters.length; i++) {
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
+      }
+      const byteArray = new Uint8Array(byteNumbers);
+      const blob = new Blob([byteArray], { type: 'image/png' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'image.png');
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    }
   useEffect(() => {
     const canvas = canvasRef.current;
     const ctx = canvas.getContext('2d');
@@ -81,6 +95,7 @@ export default function Dashboard(){
   return<div>
    <div style={{display:'grid',justifyContent:'center',rowGap:20,marginTop:10}}><canvas ref={canvasRef} />
   <button onClick={handleinput}>Press</button>
+  <span>Adjust length</span>
   <input
         type="range"
         id="slider"
@@ -90,6 +105,7 @@ export default function Dashboard(){
         value={sliderValue}
         onChange={handleSliderChange}
       />
+      <span>Adjust breadth</span>
       <input
         type="range"
         id="slider"
@@ -99,6 +115,7 @@ export default function Dashboard(){
         value={sliderValue1}
         onChange={handleSliderChange1}
       />
+      <span>Adjust y-coordinate</span>
       <input
         type="range"
         id="slider"
@@ -108,6 +125,7 @@ export default function Dashboard(){
         value={sliderValue2}
         onChange={handleSliderChange2}
       />
+      <span>Adjust x-coordinate</span>
       <input
         type="range"
         id="slider"
@@ -130,11 +148,18 @@ export default function Dashboard(){
       <button value='brown' onClick={handleColor}>brown</button>
       <button value='black' onClick={handleColor}>black</button>
         </div>
+      {/* <div style={{display:'flex',columnGap:20}}> */}
+      <button value='blue' onClick={handleColor}>blue (to erase the portion required)</button>
+      {/* </div> */}
       <button onClick={handleRectinput}>add rectangle</button>
-      <button onClick={handleSaveAsImage}>Save as Image</button>
+      <button onClick={handleSaveAsImage}>Generate image</button>
+      <h2>Resultant Image</h2>
+      {result && <div style={{display:'grid',justifyContent:'center',rowGap:20,marginTop:10}}><img src={"data:image/png;base64, "+result}/>
+      <button onClick={downloadimage} value={result}>download image</button>
+      </div>}
       <h2>Instructions Table</h2>
       </div>
-      <table style={{display:'grid',justifyContent:'center',rowGap:20}}>
+      <table style={{display:'grid',justifyContent:'center',rowGap:20,marginBottom:30}}>
   <tbody >
     <tr>
       <td>Press the Press button to see the changes you are doing and press <br/>it again if you dont want to see the changes you are doing </td>

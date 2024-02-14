@@ -37,7 +37,12 @@ def facadegenerator():
     array=array.numpy()
     imagegenerated = Image.fromarray(array)
     imagegenerated.save(r'C:\Users\Acer\OneDrive\Desktop\facadeapp\back\images\image.png','PNG')
-    return jsonify({'message':'flask connected!!'})
+    buffered = io.BytesIO()
+    imagegenerated.save(buffered, format="JPEG")
+    img_bytes = buffered.getvalue()
+    base64_img = base64.b64encode(img_bytes).decode('utf-8')
+    print(base64_img)
+    return jsonify({'message':'flask connected!!',"result":base64_img})
 
 if __name__ == '__main__':
     app.run(debug=True,port=5000)
